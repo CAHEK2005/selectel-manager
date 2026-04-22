@@ -73,10 +73,11 @@ sudo cp selectel-server-watchdog.service /etc/systemd/system/
 sudo cp selectel-server-watchdog.env.example /etc/selectel-server-watchdog.env
 ```
 
-3. Установите зависимость `requests` в системный Python:
+3. Создайте virtualenv и установите зависимости внутри него (это обходит ошибку `externally-managed-environment` / PEP 668):
 
 ```bash
-sudo python3 -m pip install -r /opt/selectel-server-watchdog/requirements.txt
+sudo python3 -m venv /opt/selectel-server-watchdog/.venv
+sudo /opt/selectel-server-watchdog/.venv/bin/pip install -r /opt/selectel-server-watchdog/requirements.txt
 ```
 
 4. Отредактируйте `/etc/selectel-server-watchdog.env` и заполните реальные креды Selectel.
@@ -100,5 +101,15 @@ sudo journalctl -u selectel-server-watchdog.service -f
 После изменения `/etc/selectel-server-watchdog.env` перезапустите сервис:
 
 ```bash
+sudo systemctl restart selectel-server-watchdog.service
+```
+
+
+### Обновление кода/зависимостей
+
+После обновления `requirements.txt` повторно установите зависимости в venv и перезапустите сервис:
+
+```bash
+sudo /opt/selectel-server-watchdog/.venv/bin/pip install -r /opt/selectel-server-watchdog/requirements.txt
 sudo systemctl restart selectel-server-watchdog.service
 ```
